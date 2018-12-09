@@ -30,5 +30,8 @@ class WeatherApi(private val engine: HttpClientEngine) {
     }
 
     @Serializable
-    data class Weather(val base: String)
+    data class Weather(val coord: Coordinate, val base: String)
+
+    @Serializable
+    data class Coordinate(val lon: Float, val lat: Float)
 }
