@@ -1,0 +1,13 @@
+import com.regin.startmultiplatform.Coordinate;
+
+CREATE TABLE WeatherModel (
+    coordinate TEXT as Coordinate,
+    base TEXT NOT NULL
+);
+
+insertItem:
+INSERT OR FAIL INTO WeatherModel(coordinate, base) VALUES (?, ?);
+
+selectAll:
+SELECT *
+FROM WeatherModel;

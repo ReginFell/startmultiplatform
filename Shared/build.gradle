@@ -1,5 +1,6 @@
 apply plugin: 'kotlin-multiplatform'
 apply plugin: 'kotlinx-serialization'
+apply plugin: 'com.squareup.sqldelight'
 
 kotlin {
     targets {
@@ -15,6 +16,7 @@ kotlin {
             implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.0.1"
             implementation "io.ktor:ktor-client-json:1.0.0"
             implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.0"
+            implementation "com.squareup.sqldelight:runtime-metadata:1.0.0-rc4"
         }
 
         androidMain.dependencies {
@@ -23,6 +25,18 @@ kotlin {
             //It is actual platform implementations
             implementation "io.ktor:ktor-client-json-jvm:1.0.0"
             implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1"
+            implementation "com.squareup.sqldelight:runtime-jvm:1.0.0-rc4"
         }
     }
+}
+
+sqldelight {
+
+    //The package where all entities will be generated in
+    //More options https://github.com/square/sqldelight/blob/master/RELEASE_CANDIDATE.md
+    packageName = 'com.regin.startmultiplatform'
+}
+
+configurations {
+    compileClasspath
 }

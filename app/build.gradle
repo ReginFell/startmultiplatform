@@ -18,6 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+    }
 }
 
 dependencies {
@@ -26,6 +30,11 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
     implementation 'io.ktor:ktor-client-okhttp:1.0.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
+
+    implementation 'com.squareup.sqldelight:android-driver:1.0.0-rc4'
+
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+
 
     implementation project(":Shared")
 }

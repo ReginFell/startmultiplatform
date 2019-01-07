@@ -28,10 +28,4 @@ class WeatherApi(private val engine: HttpClientEngine) {
     companion object {
         private const val baseUrl = "https://samples.openweathermap.org"
     }
-
-    @Serializable
-    data class Weather(val coord: Coordinate, val base: String)
-
-    @Serializable
-    data class Coordinate(val lon: Float, val lat: Float)
 }
