@@ -2,9 +2,9 @@ package com.regin.startmultiplatform
 
 import com.regin.startmultiplatform.db.model.WeatherModel
 
-class WeatherDao(queryWrapper: QueryWrapper) {
+class WeatherDao(database: AnyNameDatabase) {
 
-    private val db = queryWrapper.weatherModelQueries
+    private val db = database.weatherModelQueries
 
     internal fun insert(item: Weather) {
         db.insertItem(

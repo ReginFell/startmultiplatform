@@ -3,15 +3,16 @@ package com.regin.startmultiplatform
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.regin.startmultiplatform.db.model.WeatherModel
-import com.squareup.sqldelight.ColumnAdapter
-import com.squareup.sqldelight.android.AndroidSqlDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import io.ktor.client.engine.okhttp.OkHttpConfig
 import io.ktor.client.engine.okhttp.OkHttpEngine
 import kotlinx.coroutines.*
 import okhttp3.logging.HttpLoggingInterceptor
 import kotlin.coroutines.CoroutineContext
 import com.facebook.stetho.Stetho
+import com.squareup.sqldelight.android.AndroidSqliteDriver
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
 
@@ -31,21 +32,26 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
             }
         })
 
-        val coordinateAdapter = object: ColumnAdapter<Coordinate, String> {
-            override fun decode(databaseValue: String): Coordinate {
-                val split = databaseValue.split(":")
-                return Coordinate(split[0].toFloat(), split[1].toFloat())
-            }
+        //DO NOT DO THE SAME IN YOUR PRODUCTION CODE, use DI
+        val config = SupportSQLiteOpenHelper.Configuration.builder(this)
+            .name("database.db")
+            .callback(object : SupportSQLiteOpenHelper.Callback(1) {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    val driver = AndroidSqliteDriver(db)
+                    AnyNameDatabase.Schema.create(driver)
+                }
 
-            override fun encode(value: Coordinate): String {
-                return "${value.lat}:${value.lon}"
-            }
-        }
+                override fun onUpgrade(db: SupportSQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+                }
 
-        val weatherDao = WeatherDao(QueryWrapper(
-            AndroidSqlDatabase(QueryWrapper.Schema, this, "database.db"),
-            WeatherModel.Adapter(coordinateAdapter)
-        ))
+            })
+            .build()
+
+        val sqlHelper = FrameworkSQLiteOpenHelperFactory().create(config)
+
+        val database = createDatabase(AndroidSqliteDriver(sqlHelper))
+
+        val weatherDao = WeatherDao(database)
 
         val weatherApi = WeatherApi(engine)
         val weatherRepository = WeatherRepository(weatherApi, weatherDao)
